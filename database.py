@@ -1,6 +1,6 @@
 import psycopg2
 
-DB_SCRIPT_PATH = "database/create.sql"
+DB_SCRIPT_PATH = "init.sql"
 
 class DatabaseSreality:
     def __init__(self, conf):
@@ -12,12 +12,24 @@ class DatabaseSreality:
             password = conf['password']
         )
 
-    def insert_property(self, property):
+    def property_insert(self, property):
         """ Insert property object into properties table """
         with self.conn.cursor() as cur:
             cur.execute(f"INSERT INTO properties (title, img_url) VALUES ('{property['title']}', '{property['img_url']}')")
 
-    def create_db(self):
+    def property_fetch_all(self):
+        """ Fetch all properties """
+
+        data = []
+
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT * FROM properties")
+            data = cur.fetchall()
+
+        return data
+
+
+    def init_db(self):
         """ Run create.qsl script """
         with self.conn.cursor() as cur:
             with open(DB_SCRIPT_PATH, 'r') as f:

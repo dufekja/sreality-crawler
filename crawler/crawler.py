@@ -1,4 +1,5 @@
 import hydra
+import database
 
 from scrapy import signals
 from scrapy.crawler import CrawlerProcess
@@ -6,7 +7,6 @@ from scrapy.signalmanager import dispatcher
 
 from spider import SrealitySpider
 
-from database.database import DatabaseSreality
 
 def get_results(config):
     """ Get result from crawler based on config """
@@ -32,12 +32,12 @@ def main(config):
     results = get_results(crawler_conf)
 
     # create db
-    db = DatabaseSreality(db_conf['db'])
-    db.create_db()
+    db = database.DatabaseSreality(db_conf['db'])
+    db.init_db()
 
     # put scraped data into db
     for property in results:
-        db.insert_property(property)
+        db.property_insert(property)
     db.commit()
     
     db.close()
