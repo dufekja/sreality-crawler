@@ -1,0 +1,27 @@
+[project]
+name = "sreality_scraper"
+version = "0.0.1"
+description = ""
+authors = [
+  { name = "Jan Dufek", email = "jan.dufek2002@gmail.com" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = "~=3.10"
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.setuptools]
+packages = ["scraper", "server"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.ruff]
+line-length = 120
+select = ["I"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning"
+]
