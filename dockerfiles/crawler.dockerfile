@@ -9,13 +9,11 @@ RUN apt update && apt install --yes postgresql
 COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY conf/ conf/
-COPY src/ src/
+COPY src/crawler/ src/crawler/
 
 # install requirements
 RUN python -m pip install --upgrade -r requirements.txt --no-cache-dir
 RUN playwright install-deps
 RUN playwright install chromium
 
-EXPOSE 6023
-
-ENTRYPOINT ["python3", "src/crawler/crawler.py"]
+ENTRYPOINT ["python", "src/crawler/crawler.py"]

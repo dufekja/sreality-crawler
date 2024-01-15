@@ -1,12 +1,13 @@
-version: "1"
+version: "3.7"
 services:
-  postgresql:
-    image: postgresql:latest
+  db:
+    image: db:latest
     build:
       context: .
       dockerfile: dockerfiles/db.dockerfile
     ports:
       - "5432:5432"
+    restart: always
   crawler:
     image: crawler:latest
     build:
