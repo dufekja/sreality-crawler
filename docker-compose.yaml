@@ -1,0 +1,21 @@
+version: "1"
+services:
+  postgresql:
+    image: postgresql:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/db.dockerfile
+    ports:
+      - "5432:5432"
+  crawler:
+    image: crawler:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/crawler.dockerfile
+  server:
+    image: server:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/server.dockerfile
+    ports:
+      - "8080:8080"

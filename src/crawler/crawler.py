@@ -32,6 +32,11 @@ def main(config):
 
     results = get_results(crawler_conf)
 
+    print('\n')
+    print('-' * 30)
+
+    print('Scraped items:', len(results))
+
     try:
         # create db
         db = DatabaseSreality(db_conf['db'])
@@ -41,11 +46,11 @@ def main(config):
         for property in results:
             db.property_insert(property)
         db.commit()
-        
         db.close()
+
+        print('DB updated')
+
     except:
-        print('\n')
-        print('-' * 20)
         print('DB error')
 
 
