@@ -1,7 +1,7 @@
 spider:
   name: sreality
   start_urls: [https://www.sreality.cz/en/search/for-sale/apartments]
-  limit: 100
+  limit: 50
 
 settings:
   TWISTED_REACTOR: twisted.internet.asyncioreactor.AsyncioSelectorReactor

@@ -1,6 +1,6 @@
 import psycopg2
 
-DB_SCRIPT_PATH = "init.sql"
+DB_SCRIPT_PATH = "src/database/create.sql"
 
 class DatabaseSreality:
     def __init__(self, conf):

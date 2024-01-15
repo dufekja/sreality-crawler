@@ -1,8 +1,9 @@
 import hydra
-import database
 
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+
+from src.database.database import DatabaseSreality
 
 app = FastAPI()
 
@@ -10,15 +11,20 @@ app = FastAPI()
 @app.get("/", response_class=HTMLResponse)
 async def root():
 
-    db = database.DatabaseSreality(conf={
-        'database': 'sreality',
-        'host': 'localhost',
-        'port': 5432,
-        'user': 'admin',
-        'password': 'admin'
-    })
+    data = []
+    try:
+        db = DatabaseSreality(conf={
+            'database': 'srealitydb',
+            'host': 'localhost',
+            'port': 5432,
+            'user': 'admin',
+            'password': 'admin'
+        })
 
-    data = db.property_fetch_all()
+        data = db.property_fetch_all()
+        db.close()
+    except Exception as err:
+        return f"""{err}"""
 
     property_html = lambda title, img_url : f"""
         <div class='property'>
