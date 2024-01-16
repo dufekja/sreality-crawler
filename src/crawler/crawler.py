@@ -7,6 +7,21 @@ from scrapy.signalmanager import dispatcher
 
 from spider import SrealitySpider
 
+INSERT_PROPERTY = lambda property : f"""
+    INSERT INTO properties (title, img_url) VALUES ('{property['title']}', '{property['img_url']}')
+"""
+
+def db_connect(config):
+    """ Connect to database and return connection object """
+    return psycopg2.connect(
+        host = 'db',
+        port = '5432',
+        database = config['database'],
+        user = config['user'],
+        password = config['password']
+    )
+    
+
 def get_results(config):
     """ Get result from crawler based on config """
     
@@ -24,36 +39,30 @@ def get_results(config):
 
     return results
 
-INSERT_PROPERTY = lambda property : f"""
-    INSERT INTO properties (title, img_url) VALUES ('{property['title']}', '{property['img_url']}')
-"""
 
 @hydra.main(version_base=None, config_path='../../conf', config_name='config')
 def main(config):
-    crawler_conf, db_conf = config['crawler'], config['db']
-
-    results = get_results(crawler_conf)
-
     print('\n')
     print('-' * 30)
 
+    # get results from crawler
+    results = get_results(config['crawler'])
     print('Scraped items:', len(results))
 
+    # connect to database and insert results
     try:
-        # create db connection
-        conn = psycopg2.connect(**db_conf['db'])
+        conn = db_connect(config['db']['db'])
 
-        # put scraped data into db
         with conn.cursor() as cur:
             for property in results:
                 cur.execute(INSERT_PROPERTY(property))
 
             conn.commit()
         conn.close()
-        print('DB updated')
 
-    except:
-        print('DB error')
+        print('DB updated')
+    except Exception as err:
+        print('DB err:', err)
 
 
 if __name__ == '__main__':

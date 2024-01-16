@@ -2,51 +2,48 @@ import hydra
 import uvicorn
 import psycopg2
 
+
+from sources import BODY, PROPERTY_ITEM
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
-CONF = {
-    'host': 'db',
-    'port': 5432,
-    'database': 'srealitydb',
-    'user': 'admin',
-    'password': 'admin'
-}
-
-BODY = lambda body : f"""
-        <html>
-            <head><title>Crawled content</title></head>
-            <body>{body}</body>
-        </html>
-    """
-
-PROPERTY_ITEM = lambda title, img_url : f"""
-        <div class='property'>
-            <h2>{title}</h2>
-            <img src="{img_url}">
-        </div>
-    """
 
 @hydra.main(version_base=None, config_path='../../conf', config_name='config')
 def main(config):
-    CONF = config['db']
+    global CONF
+    CONF = config['db']['db']
+    
     uvicorn.run(app, host="0.0.0.0", port=8080)
+    
 
+def db_connect():
+    """ Connect to database and return connection object """
+    return psycopg2.connect(
+        host = 'db',
+        port = 5432,
+        database = CONF['database'],
+        user = CONF['user'],
+        password = CONF['password']
+    )
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
 
     # fetch data from database
     data = []
+
     try:
-        conn = psycopg2.connect(**CONF)
+        conn = db_connect()
+        
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM properties")
             data = cur.fetchall()
 
         conn.close()
+
     except Exception as err:
         return f"""{err}"""
 
