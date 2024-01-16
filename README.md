@@ -8,27 +8,8 @@ Aim of this project is to scrape items from `sreality.cz` and show them on a sim
 - implement siple HTTP python server (I'll use fastapi) and show scraped data on a simple page (title, image)
 - create docker compose config -> localhost:8080 
 
-## Result:
+## How to run:
 
-I was not able to get working container for crawler and docker compose. But locally the code works with these commands:
+On ubuntu run: ``` docker compose up --build ```
+- make sure, you don't have occupied ports 8080 and 5432 by different services
 
-Deps:
-```
-    python -m pip install --upgrade -r requirements.txt
-```
-
-Database:
-```
-    docker build -f dockerfiles/db.dockerfile -t postgresql .
-    docker run -d --name db -p 5432:5432 postgresql
-```
-
-Crawler:
-```
-    python src/crawler/crawler.py
-```
-
-Server:
-```
-    uvicorn src.server.server:app --port 8080
-```

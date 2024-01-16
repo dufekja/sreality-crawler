@@ -24,7 +24,9 @@ def get_results(config):
 
     return results
 
-INSERT_PROPERTY = lambda property : f"INSERT INTO properties (title, img_url) VALUES ('{property['title']}', '{property['img_url']}')"
+INSERT_PROPERTY = lambda property : f"""
+    INSERT INTO properties (title, img_url) VALUES ('{property['title']}', '{property['img_url']}')
+"""
 
 @hydra.main(version_base=None, config_path='../../conf', config_name='config')
 def main(config):
@@ -39,13 +41,7 @@ def main(config):
 
     try:
         # create db connection
-        conn = psycopg2.connect(
-            host = "db",
-            port = 5432,
-            database = "srealitydb",
-            user = "admin",
-            password = "admin"
-        )
+        conn = psycopg2.connect(**db_conf['db'])
 
         # put scraped data into db
         with conn.cursor() as cur:
